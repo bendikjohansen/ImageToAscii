@@ -1,23 +1,27 @@
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+
 namespace Core;
 
 public interface IAsciiRepresentationPipeline
 {
-    string ToAsciiRepresentation(Stream imageStream, ImageProperties imageProperties);
+    Task<string> ToAsciiRepresentation(Stream imageStream, ImageProperties imageProperties);
 }
 
 public class AsciiRepresentationPipeline : IAsciiRepresentationPipeline
 {
-    private readonly ImageToAsciiConverter _imageToAsciiConverter;
+    private readonly IImageToAsciiConverter _imageToAsciiConverter;
 
-    public AsciiRepresentationPipeline(ImageToAsciiConverter imageToAsciiConverter)
+    public AsciiRepresentationPipeline(IImageToAsciiConverter imageToAsciiConverter)
     {
         _imageToAsciiConverter = imageToAsciiConverter;
     }
 
-    public string ToAsciiRepresentation(Stream imageStream, ImageProperties imageProperties)
+    public async Task<string> ToAsciiRepresentation(Stream imageStream, ImageProperties imageProperties)
     {
         var (contrast, brightness, width) = imageProperties;
-        var image = new ImageBuilder(imageStream)
+        var originalImage = await Image.LoadAsync<Rgba32>(imageStream);
+        var image = new ImageBuilder(originalImage)
             .WithBrightness(brightness)
             .WithContrast(contrast)
             .WithWidth(width)
@@ -28,4 +32,4 @@ public class AsciiRepresentationPipeline : IAsciiRepresentationPipeline
     }
 }
 
-public record ImageProperties(float? Contrast, float Brightness, int Width);
+public record ImageProperties(float? Contrast, float? Brightness, int? Width);

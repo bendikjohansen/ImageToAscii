@@ -1,0 +1,51 @@
+@page "/Ascii"
+@inject IAsciiRepresentationPipeline _asciiRepresentation;
+
+<h3>Ascii</h3>
+
+<div>
+    <div>
+        <InputFile OnChange="@HandleInputChange"/>
+    </div>
+    <div>
+        <label for="brightness-input">Brightness</label>
+        <input type="number" id="brightness-input" @bind="_brightness"/>
+    </div>
+    <div>
+        <label for="contrast-input">Contrast</label>
+        <input type="number" id="contrast-input" @bind="_contrast"/>
+    </div>
+    <div>
+        <label for="width-input">Width</label>
+        <input type="number" id="width-input" @bind="_width"/>
+    </div>
+    <div>
+        <button @onclick="ConvertImage">Render</button>
+    </div>
+</div>
+<pre style="font-size: 3px; font-family: monospace;">@_output</pre>
+
+@code {
+    private IBrowserFile? _image;
+    private float _brightness;
+    private float _contrast;
+    private int _width;
+    
+    private string _output = string.Empty;
+
+    private async Task ConvertImage()
+    {
+        if (_image == null)
+        {
+            return;
+        }
+        var stream = _image.OpenReadStream();
+        _output = await _asciiRepresentation.ToAsciiRepresentation(stream, new(_contrast, _brightness, _width));
+    }
+
+    private void HandleInputChange(InputFileChangeEventArgs e)
+    {
+        _image = e.File;
+    }
+
+}

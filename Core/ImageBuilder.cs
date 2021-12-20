@@ -16,24 +16,19 @@ public class ImageBuilder
     {
         _image = image.Clone();
     }
-    
-    public ImageBuilder(Stream stream)
-    {
-        _image = Image.Load<Rgba32>(stream);
-    }
 
     public ImageBuilder WithContrast(float? contrast)
     {
         _contrast = contrast;
         return this;
     }
-    
+
     public ImageBuilder WithBrightness(float? brightness)
     {
         _brightness = brightness;
         return this;
     }
-    
+
     public ImageBuilder WithWidth(int? width)
     {
         _width = width;
@@ -43,9 +38,9 @@ public class ImageBuilder
     public Image<Rgba32> Build()
     {
         _image.Mutate(image => image
+            .Resize(GetDownscaledSize(image.GetCurrentSize()))
             .Contrast(_contrast ?? 1)
-            .Brightness(_brightness ?? 1)
-            .Resize(GetDownscaledSize(image.GetCurrentSize())));
+            .Brightness(_brightness ?? 1));
 
         return _image;
     }
@@ -59,5 +54,5 @@ public class ImageBuilder
         }
 
         return currentSize;
-    } 
+    }
 }
