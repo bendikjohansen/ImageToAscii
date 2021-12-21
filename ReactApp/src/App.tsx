@@ -1,8 +1,8 @@
 import { ThemeProvider } from "@emotion/react";
 import { createTheme, CssBaseline } from "@mui/material";
 import { useState } from "react";
-import { AsciiForm } from "./AsciiForm";
 import { AsciiOutput } from "./AsciiOutput";
+import { AsciiRealtimeForm } from "./AsciiRealtimeForm";
 
 const theme = createTheme();
 
@@ -13,7 +13,7 @@ export const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AsciiForm onInvertChange={setInvert} onSuccess={setAsciiOutput} />
+      <AsciiRealtimeForm onInvertChange={setInvert} onSuccess={setAsciiOutput} />
       <AsciiOutput invert={invert}>{asciiOutput}</AsciiOutput>
     </ThemeProvider>
   );
